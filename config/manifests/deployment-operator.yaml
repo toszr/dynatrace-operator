@@ -21,7 +21,7 @@ spec:
       serviceAccountName: dynatrace-operator
       containers:
         - name: dynatrace-operator
-          image: quay.io/dynatrace/dynatrace-operator:snapshot
+          image: quay.io/dynatrace/dynatrace-operator:snapshot-feature-distroless-image
           imagePullPolicy: Always
           env:
             - name: POD_NAMESPACE
