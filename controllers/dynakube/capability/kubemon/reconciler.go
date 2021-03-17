@@ -28,7 +28,7 @@ func NewReconciler(clt client.Client, apiReader client.Reader, scheme *runtime.S
 	return &Reconciler{
 		capability.NewReconciler(
 			clt, apiReader, scheme, dtc, log, instance, imageVersionProvider, enableUpdates,
-			&instance.Spec.KubernetesMonitoringSpec.CapabilityProperties, module, capabilityName, serviceAccountOwner),
+			&instance.Spec.KubernetesMonitoring.CapabilityProperties, module, capabilityName, serviceAccountOwner),
 	}
 }
 

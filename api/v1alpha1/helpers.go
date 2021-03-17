@@ -28,7 +28,7 @@ const (
 
 // NeedsActiveGate returns true when a feature requires ActiveGate instances.
 func (dk *DynaKube) NeedsActiveGate() bool {
-	return dk.Spec.KubernetesMonitoringSpec.Enabled || dk.Spec.RoutingSpec.Enabled
+	return dk.Spec.KubernetesMonitoring.Enabled || dk.Spec.Routing.Enabled
 }
 
 // NeedsImmutableOneAgent returns true when a feature requires OneAgent instances running the immutable image.

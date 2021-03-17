@@ -27,7 +27,7 @@ func TestBuildResources(t *testing.T) {
 	t.Run(`BuildResources with custom resource requests and limits`, func(t *testing.T) {
 		instance := &v1alpha1.DynaKube{
 			Spec: v1alpha1.DynaKubeSpec{
-				KubernetesMonitoringSpec: v1alpha1.KubernetesMonitoringSpec{
+				KubernetesMonitoring: v1alpha1.KubernetesMonitoringSpec{
 					CapabilityProperties: v1alpha1.CapabilityProperties{
 						Resources: corev1.ResourceRequirements{
 							Limits: corev1.ResourceList{

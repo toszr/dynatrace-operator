@@ -86,7 +86,7 @@ func TestReconcileActiveGate_Reconcile(t *testing.T) {
 				Namespace: testNamespace,
 			},
 			Spec: v1alpha1.DynaKubeSpec{
-				KubernetesMonitoringSpec: v1alpha1.KubernetesMonitoringSpec{
+				KubernetesMonitoring: v1alpha1.KubernetesMonitoringSpec{
 					CapabilityProperties: v1alpha1.CapabilityProperties{
 						Enabled: true,
 					},
@@ -147,7 +147,7 @@ func TestReconcile_RemoveRoutingIfDisabled(t *testing.T) {
 			Namespace: testNamespace,
 		},
 		Spec: v1alpha1.DynaKubeSpec{
-			RoutingSpec: v1alpha1.RoutingSpec{
+			Routing: v1alpha1.RoutingSpec{
 				CapabilityProperties: v1alpha1.CapabilityProperties{
 					Enabled: true,
 				},
@@ -205,7 +205,7 @@ func TestReconcile_RemoveRoutingIfDisabled(t *testing.T) {
 	err = r.client.Get(context.TODO(), client.ObjectKey{Name: instance.Name, Namespace: instance.Namespace}, instance)
 	require.NoError(t, err)
 
-	instance.Spec.RoutingSpec.Enabled = false
+	instance.Spec.Routing.Enabled = false
 	err = r.client.Update(context.TODO(), instance)
 	require.NoError(t, err)
 

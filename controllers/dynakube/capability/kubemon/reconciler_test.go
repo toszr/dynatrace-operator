@@ -51,7 +51,7 @@ func TestReconciler_Reconcile(t *testing.T) {
 				Name: testName,
 			},
 			Spec: v1alpha1.DynaKubeSpec{
-				KubernetesMonitoringSpec: v1alpha1.KubernetesMonitoringSpec{
+				KubernetesMonitoring: v1alpha1.KubernetesMonitoringSpec{
 					CapabilityProperties: v1alpha1.CapabilityProperties{
 						Enabled: true,
 					},
@@ -92,7 +92,7 @@ func TestReconciler_Reconcile(t *testing.T) {
 
 		expected, err := capability.CreateStatefulSet(
 			capability.NewStatefulSetProperties(
-				instance, &instance.Spec.KubernetesMonitoringSpec.CapabilityProperties,
+				instance, &instance.Spec.KubernetesMonitoring.CapabilityProperties,
 				testUID, "", module, capabilityName, serviceAccountOwner,
 			))
 		assert.NoError(t, err)
@@ -114,7 +114,7 @@ func TestReconciler_Reconcile(t *testing.T) {
 				Namespace: testNamespace,
 			},
 			Spec: v1alpha1.DynaKubeSpec{
-				KubernetesMonitoringSpec: v1alpha1.KubernetesMonitoringSpec{
+				KubernetesMonitoring: v1alpha1.KubernetesMonitoringSpec{
 					CapabilityProperties: v1alpha1.CapabilityProperties{
 						CustomProperties: &v1alpha1.DynaKubeValueSource{
 							Value: testValue,

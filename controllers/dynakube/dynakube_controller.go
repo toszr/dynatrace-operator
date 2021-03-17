@@ -191,7 +191,7 @@ func (r *ReconcileDynaKube) reconcileImpl(ctx context.Context, rec *utils.Reconc
 	rec.Update(upd, defaultUpdateInterval, "Found image updates")
 	rec.Error(err)
 
-	if rec.Instance.Spec.KubernetesMonitoringSpec.Enabled {
+	if rec.Instance.Spec.KubernetesMonitoring.Enabled {
 		upd, err := kubemon.NewReconciler(
 			r.client, r.apiReader, r.scheme, dtc, rec.Log, rec.Instance, dtversion.GetImageVersion, r.enableUpdates,
 		).Reconcile()
@@ -246,7 +246,7 @@ func (r *ReconcileDynaKube) ensureDeleted(obj client.Object) error {
 }
 
 func (r *ReconcileDynaKube) reconcileRouting(rec *utils.Reconciliation, dtc dtclient.Client) bool {
-	if rec.Instance.Spec.RoutingSpec.Enabled {
+	if rec.Instance.Spec.Routing.Enabled {
 		upd, err := routing.NewReconciler(
 			r.client, r.apiReader, r.scheme, dtc, rec.Log, rec.Instance, dtversion.GetImageVersion, r.enableUpdates,
 		).Reconcile()

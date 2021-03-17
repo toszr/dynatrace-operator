@@ -35,7 +35,7 @@ func TestNewStatefulSetBuilder(t *testing.T) {
 
 func TestStatefulSetBuilder_Build(t *testing.T) {
 	instance := buildTestInstance()
-	capabilityProperties := &instance.Spec.RoutingSpec.CapabilityProperties
+	capabilityProperties := &instance.Spec.Routing.CapabilityProperties
 	sts, err := CreateStatefulSet(NewStatefulSetProperties(instance, capabilityProperties,
 		"", "", testFeature, "", ""))
 
@@ -48,7 +48,7 @@ func TestStatefulSetBuilder_Build(t *testing.T) {
 		KeyActiveGate: instance.Name,
 		keyFeature:    testFeature,
 	}, sts.Labels)
-	assert.Equal(t, instance.Spec.RoutingSpec.Replicas, sts.Spec.Replicas)
+	assert.Equal(t, instance.Spec.Routing.Replicas, sts.Spec.Replicas)
 	assert.Equal(t, appsv1.ParallelPodManagement, sts.Spec.PodManagementPolicy)
 	assert.Equal(t, metav1.LabelSelector{
 		MatchLabels: BuildLabelsFromInstance(instance),
@@ -79,7 +79,7 @@ func TestStatefulSetBuilder_Build(t *testing.T) {
 
 func TestStatefulSet_TemplateSpec(t *testing.T) {
 	instance := buildTestInstance()
-	capabilityProperties := &instance.Spec.RoutingSpec.CapabilityProperties
+	capabilityProperties := &instance.Spec.Routing.CapabilityProperties
 	templateSpec := buildTemplateSpec(NewStatefulSetProperties(instance, capabilityProperties,
 		"", "", "", "", ""))
 
@@ -127,7 +127,7 @@ func TestStatefulSet_TemplateSpec(t *testing.T) {
 
 func TestStatefulSet_Container(t *testing.T) {
 	instance := buildTestInstance()
-	capabilityProperties := &instance.Spec.RoutingSpec.CapabilityProperties
+	capabilityProperties := &instance.Spec.Routing.CapabilityProperties
 	container := buildContainer(NewStatefulSetProperties(instance, capabilityProperties,
 		"", "", "", "", ""))
 
@@ -144,7 +144,7 @@ func TestStatefulSet_Container(t *testing.T) {
 
 func TestStatefulSet_Volumes(t *testing.T) {
 	instance := buildTestInstance()
-	capabilityProperties := &instance.Spec.RoutingSpec.CapabilityProperties
+	capabilityProperties := &instance.Spec.Routing.CapabilityProperties
 
 	t.Run(`without custom properties`, func(t *testing.T) {
 		volumes := buildVolumes(NewStatefulSetProperties(instance, capabilityProperties,
@@ -194,7 +194,7 @@ func TestStatefulSet_Volumes(t *testing.T) {
 
 func TestStatefulSet_Env(t *testing.T) {
 	instance := buildTestInstance()
-	capabilityProperties := &instance.Spec.RoutingSpec.CapabilityProperties
+	capabilityProperties := &instance.Spec.Routing.CapabilityProperties
 
 	t.Run(`without proxy`, func(t *testing.T) {
 		envVars := buildEnvs(NewStatefulSetProperties(instance, capabilityProperties,
@@ -233,7 +233,7 @@ func TestStatefulSet_Env(t *testing.T) {
 	t.Run(`with networkzone`, func(t *testing.T) {
 		instance := buildTestInstance()
 		instance.Spec.NetworkZone = testName
-		capabilityProperties := &instance.Spec.RoutingSpec.CapabilityProperties
+		capabilityProperties := &instance.Spec.Routing.CapabilityProperties
 		envVars := buildEnvs(NewStatefulSetProperties(instance, capabilityProperties,
 			"", "", "", "", ""))
 
@@ -246,8 +246,8 @@ func TestStatefulSet_Env(t *testing.T) {
 	})
 	t.Run(`with group`, func(t *testing.T) {
 		instance := buildTestInstance()
-		instance.Spec.RoutingSpec.Group = testValue
-		capabilityProperties := &instance.Spec.RoutingSpec.CapabilityProperties
+		instance.Spec.Routing.Group = testValue
+		capabilityProperties := &instance.Spec.Routing.CapabilityProperties
 		envVars := buildEnvs(NewStatefulSetProperties(instance, capabilityProperties,
 			"", "", "", "", ""))
 
@@ -262,7 +262,7 @@ func TestStatefulSet_Env(t *testing.T) {
 
 func TestStatefulSet_VolumeMounts(t *testing.T) {
 	instance := buildTestInstance()
-	capabilityProperties := &instance.Spec.RoutingSpec.CapabilityProperties
+	capabilityProperties := &instance.Spec.Routing.CapabilityProperties
 
 	t.Run(`without custom properties`, func(t *testing.T) {
 		volumeMounts := buildVolumeMounts(NewStatefulSetProperties(instance, capabilityProperties,
@@ -293,7 +293,7 @@ func buildTestInstance() *dynatracev1alpha1.DynaKube {
 			Namespace: testNamespace,
 		},
 		Spec: dynatracev1alpha1.DynaKubeSpec{
-			RoutingSpec: dynatracev1alpha1.RoutingSpec{
+			Routing: dynatracev1alpha1.RoutingSpec{
 				CapabilityProperties: dynatracev1alpha1.CapabilityProperties{
 					Replicas:    &replicas,
 					Tolerations: []corev1.Toleration{{Value: testValue}},

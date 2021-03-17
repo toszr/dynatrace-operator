@@ -68,7 +68,7 @@ func createDefaultReconciler(t *testing.T) *Reconciler {
 func TestReconcile(t *testing.T) {
 	t.Run(`reconcile custom properties`, func(t *testing.T) {
 		r := createDefaultReconciler(t)
-		r.Instance.Spec.RoutingSpec.CapabilityProperties.CustomProperties = &v1alpha1.DynaKubeValueSource{
+		r.Instance.Spec.Routing.CapabilityProperties.CustomProperties = &v1alpha1.DynaKubeValueSource{
 			Value: testValue,
 		}
 		_, err := r.Reconcile()
@@ -172,7 +172,7 @@ func TestReconcile(t *testing.T) {
 
 func TestSetLivenessProbePort(t *testing.T) {
 	r := createDefaultReconciler(t)
-	stsProps := capability.NewStatefulSetProperties(r.Instance, &r.Instance.Spec.RoutingSpec.CapabilityProperties, "", "", "", "", "")
+	stsProps := capability.NewStatefulSetProperties(r.Instance, &r.Instance.Spec.Routing.CapabilityProperties, "", "", "", "", "")
 	sts, err := capability.CreateStatefulSet(stsProps)
 
 	assert.NoError(t, err)
@@ -189,7 +189,7 @@ func TestSetLivenessProbePort(t *testing.T) {
 
 func TestSetReadinessProbePort(t *testing.T) {
 	r := createDefaultReconciler(t)
-	stsProps := capability.NewStatefulSetProperties(r.Instance, &r.Instance.Spec.RoutingSpec.CapabilityProperties, "", "", "", "", "")
+	stsProps := capability.NewStatefulSetProperties(r.Instance, &r.Instance.Spec.Routing.CapabilityProperties, "", "", "", "", "")
 	sts, err := capability.CreateStatefulSet(stsProps)
 
 	assert.NoError(t, err)

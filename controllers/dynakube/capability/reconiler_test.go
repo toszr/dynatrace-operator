@@ -54,7 +54,7 @@ func createDefaultReconciler(t *testing.T) *Reconciler {
 	}
 
 	r := NewReconciler(clt, clt, scheme.Scheme, dtc, log, instance, imgVerProvider, false,
-		&instance.Spec.RoutingSpec.CapabilityProperties, "msgrouter", "MSGrouter", "")
+		&instance.Spec.Routing.CapabilityProperties, "msgrouter", "MSGrouter", "")
 	require.NotNil(t, r)
 	require.NotNil(t, r.Client)
 	require.NotNil(t, r.scheme)
@@ -69,7 +69,7 @@ func createDefaultReconciler(t *testing.T) *Reconciler {
 func TestReconcile(t *testing.T) {
 	t.Run(`reconcile custom properties`, func(t *testing.T) {
 		r := createDefaultReconciler(t)
-		r.Instance.Spec.RoutingSpec.CustomProperties = &dynatracev1alpha1.DynaKubeValueSource{
+		r.Instance.Spec.Routing.CustomProperties = &dynatracev1alpha1.DynaKubeValueSource{
 			Value: testValue,
 		}
 		_, err := r.Reconcile()
@@ -202,12 +202,12 @@ func TestReconcile_GetCustomPropertyHash(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Empty(t, hash)
 
-	r.Instance.Spec.RoutingSpec.CustomProperties = &dynatracev1alpha1.DynaKubeValueSource{Value: testValue}
+	r.Instance.Spec.Routing.CustomProperties = &dynatracev1alpha1.DynaKubeValueSource{Value: testValue}
 	hash, err = r.calculateCustomPropertyHash()
 	assert.NoError(t, err)
 	assert.NotEmpty(t, hash)
 
-	r.Instance.Spec.RoutingSpec.CustomProperties = &dynatracev1alpha1.DynaKubeValueSource{ValueFrom: testName}
+	r.Instance.Spec.Routing.CustomProperties = &dynatracev1alpha1.DynaKubeValueSource{ValueFrom: testName}
 	hash, err = r.calculateCustomPropertyHash()
 	assert.Error(t, err)
 	assert.Empty(t, hash)

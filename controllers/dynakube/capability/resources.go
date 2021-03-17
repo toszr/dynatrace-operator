@@ -27,13 +27,13 @@ func BuildResources(instance *dynatracev1alpha1.DynaKube) corev1.ResourceRequire
 
 func BuildResourceRequests(instance *dynatracev1alpha1.DynaKube, limits corev1.ResourceList) corev1.ResourceList {
 	cpuMin := resource.MustParse(ResourceCPUMinimum)
-	cpuRequest, hasCPURequest := instance.Spec.KubernetesMonitoringSpec.Resources.Requests[corev1.ResourceCPU]
+	cpuRequest, hasCPURequest := instance.Spec.KubernetesMonitoring.Resources.Requests[corev1.ResourceCPU]
 	if !hasCPURequest {
 		cpuRequest = cpuMin
 	}
 
 	memoryMin := resource.MustParse(ResourceMemoryMinimum)
-	memoryRequest, hasMemoryRequest := instance.Spec.KubernetesMonitoringSpec.Resources.Requests[corev1.ResourceMemory]
+	memoryRequest, hasMemoryRequest := instance.Spec.KubernetesMonitoring.Resources.Requests[corev1.ResourceMemory]
 	if !hasMemoryRequest {
 		memoryRequest = memoryMin
 	}
@@ -46,13 +46,13 @@ func BuildResourceRequests(instance *dynatracev1alpha1.DynaKube, limits corev1.R
 
 func buildResourceLimits(instance *dynatracev1alpha1.DynaKube) corev1.ResourceList {
 	cpuMax := resource.MustParse(ResourceCPUMaximum)
-	cpuLimit, hasCPULimit := instance.Spec.KubernetesMonitoringSpec.Resources.Limits[corev1.ResourceCPU]
+	cpuLimit, hasCPULimit := instance.Spec.KubernetesMonitoring.Resources.Limits[corev1.ResourceCPU]
 	if !hasCPULimit {
 		cpuLimit = cpuMax
 	}
 
 	memoryMax := resource.MustParse(ResourceMemoryMaximum)
-	memoryLimit, hasMemoryLimit := instance.Spec.KubernetesMonitoringSpec.Resources.Limits[corev1.ResourceMemory]
+	memoryLimit, hasMemoryLimit := instance.Spec.KubernetesMonitoring.Resources.Limits[corev1.ResourceMemory]
 	if !hasMemoryLimit {
 		memoryLimit = memoryMax
 	}
