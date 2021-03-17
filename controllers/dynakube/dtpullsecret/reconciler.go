@@ -17,10 +17,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-const (
-	PullSecretSuffix = "-pull-secret"
-)
-
 type Reconciler struct {
 	client.Client
 	apiReader client.Reader
@@ -71,7 +67,7 @@ func (r *Reconciler) reconcilePullSecret() error {
 
 func (r *Reconciler) createPullSecretIfNotExists(pullSecretData map[string][]byte) (*corev1.Secret, error) {
 	var config corev1.Secret
-	err := r.apiReader.Get(context.TODO(), client.ObjectKey{Name: extendWithPullSecretSuffix(r.instance.Name), Namespace: r.instance.Namespace}, &config)
+	err := r.apiReader.Get(context.TODO(), client.ObjectKey{Name: r.instance.PullSecret(), Namespace: r.instance.Namespace}, &config)
 	if k8serrors.IsNotFound(err) {
 		r.log.Info("Creating pull secret")
 		return r.createPullSecret(pullSecretData)
@@ -95,7 +91,7 @@ func (r *Reconciler) createPullSecret(pullSecretData map[string][]byte) (*corev1
 
 	err := r.Create(context.TODO(), pullSecret)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create secret '%s': %w", extendWithPullSecretSuffix(r.instance.Name), err)
+		return nil, fmt.Errorf("failed to create secret '%s': %w", r.instance.PullSecret(), err)
 	}
 	return pullSecret, nil
 }
@@ -116,14 +112,10 @@ func isPullSecretEqual(currentSecret *corev1.Secret, desired map[string][]byte) 
 func BuildPullSecret(instance *dynatracev1alpha1.DynaKube, pullSecretData map[string][]byte) *corev1.Secret {
 	return &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      extendWithPullSecretSuffix(instance.Name),
+			Name:      instance.PullSecret(),
 			Namespace: instance.Namespace,
 		},
 		Type: corev1.SecretTypeDockerConfigJson,
 		Data: pullSecretData,
 	}
-}
-
-func extendWithPullSecretSuffix(name string) string {
-	return name + PullSecretSuffix
 }

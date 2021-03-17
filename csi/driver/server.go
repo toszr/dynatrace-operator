@@ -25,7 +25,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	dtcsi "github.com/Dynatrace/dynatrace-operator/controllers/csi"
+	dtcsi "github.com/Dynatrace/dynatrace-operator/csi"
 	"github.com/Dynatrace/dynatrace-operator/dtclient"
 	"github.com/Dynatrace/dynatrace-operator/logger"
 	"github.com/Dynatrace/dynatrace-operator/version"

@@ -20,9 +20,9 @@ import (
 	"flag"
 	"os"
 
-	dtcsi "github.com/Dynatrace/dynatrace-operator/controllers/csi"
-	csidriver "github.com/Dynatrace/dynatrace-operator/controllers/csi/driver"
-	csiprovisioner "github.com/Dynatrace/dynatrace-operator/controllers/csi/provisioner"
+	dtcsi "github.com/Dynatrace/dynatrace-operator/csi"
+	csidriver "github.com/Dynatrace/dynatrace-operator/csi/driver"
+	csiprovisioner "github.com/Dynatrace/dynatrace-operator/csi/provisioner"
 	"github.com/Dynatrace/dynatrace-operator/logger"
 	"github.com/Dynatrace/dynatrace-operator/scheme"
 	"github.com/Dynatrace/dynatrace-operator/version"

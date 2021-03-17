@@ -7,8 +7,7 @@ import (
 	"strconv"
 
 	dynatracev1alpha1 "github.com/Dynatrace/dynatrace-operator/api/v1alpha1"
-	"github.com/Dynatrace/dynatrace-operator/controllers/customproperties"
-	"github.com/Dynatrace/dynatrace-operator/controllers/dtpullsecret"
+	"github.com/Dynatrace/dynatrace-operator/controllers/dynakube/customproperties"
 	"github.com/pkg/errors"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -132,7 +131,7 @@ func buildTemplateSpec(stsProperties *statefulSetProperties) corev1.PodSpec {
 		Tolerations: stsProperties.Tolerations,
 		Volumes:     buildVolumes(stsProperties),
 		ImagePullSecrets: []corev1.LocalObjectReference{
-			{Name: stsProperties.Name + dtpullsecret.PullSecretSuffix},
+			{Name: stsProperties.PullSecret()},
 		},
 	}
 }

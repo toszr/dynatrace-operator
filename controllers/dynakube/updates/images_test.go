@@ -23,8 +23,7 @@ import (
 	"testing"
 
 	dynatracev1alpha1 "github.com/Dynatrace/dynatrace-operator/api/v1alpha1"
-	"github.com/Dynatrace/dynatrace-operator/controllers/dtpullsecret"
-	"github.com/Dynatrace/dynatrace-operator/controllers/dtversion"
+	"github.com/Dynatrace/dynatrace-operator/controllers/dynakube/dtversion"
 	"github.com/Dynatrace/dynatrace-operator/controllers/utils"
 	"github.com/Dynatrace/dynatrace-operator/logger"
 	"github.com/Dynatrace/dynatrace-operator/scheme"
@@ -107,7 +106,7 @@ func createTestPullSecret(_ *testing.T, clt client.Client, rec *utils.Reconcilia
 	return clt.Create(context.TODO(), &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: rec.Instance.Namespace,
-			Name:      rec.Instance.Name + dtpullsecret.PullSecretSuffix,
+			Name:      rec.Instance.PullSecret(),
 		},
 		Data: map[string][]byte{
 			".dockerconfigjson": data,

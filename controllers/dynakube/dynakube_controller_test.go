@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/Dynatrace/dynatrace-operator/api/v1alpha1"
-	"github.com/Dynatrace/dynatrace-operator/controllers/capability/kubemon"
-	"github.com/Dynatrace/dynatrace-operator/controllers/capability/routing"
-	"github.com/Dynatrace/dynatrace-operator/controllers/kubesystem"
+	"github.com/Dynatrace/dynatrace-operator/controllers/dynakube/capability/kubemon"
+	"github.com/Dynatrace/dynatrace-operator/controllers/dynakube/capability/routing"
+	"github.com/Dynatrace/dynatrace-operator/controllers/dynakube/kubesystem"
 	"github.com/Dynatrace/dynatrace-operator/dtclient"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

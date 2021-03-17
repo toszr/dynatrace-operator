@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	dynatracev1alpha1 "github.com/Dynatrace/dynatrace-operator/api/v1alpha1"
-	"github.com/Dynatrace/dynatrace-operator/controllers/customproperties"
-	"github.com/Dynatrace/dynatrace-operator/controllers/dtversion"
-	"github.com/Dynatrace/dynatrace-operator/controllers/kubesystem"
+	"github.com/Dynatrace/dynatrace-operator/controllers/dynakube/customproperties"
+	"github.com/Dynatrace/dynatrace-operator/controllers/dynakube/dtversion"
+	"github.com/Dynatrace/dynatrace-operator/controllers/dynakube/kubesystem"
 	"github.com/Dynatrace/dynatrace-operator/dtclient"
 	"github.com/Dynatrace/dynatrace-operator/logger"
 	"github.com/pkg/errors"

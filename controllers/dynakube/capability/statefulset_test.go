@@ -4,8 +4,7 @@ import (
 	"testing"
 
 	dynatracev1alpha1 "github.com/Dynatrace/dynatrace-operator/api/v1alpha1"
-	"github.com/Dynatrace/dynatrace-operator/controllers/customproperties"
-	"github.com/Dynatrace/dynatrace-operator/controllers/dtpullsecret"
+	"github.com/Dynatrace/dynatrace-operator/controllers/dynakube/customproperties"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	appsv1 "k8s.io/api/apps/v1"
@@ -123,7 +122,7 @@ func TestStatefulSet_TemplateSpec(t *testing.T) {
 	assert.Equal(t, capabilityProperties.Tolerations, templateSpec.Tolerations)
 	assert.Empty(t, templateSpec.Volumes)
 	assert.NotEmpty(t, templateSpec.ImagePullSecrets)
-	assert.Contains(t, templateSpec.ImagePullSecrets, corev1.LocalObjectReference{Name: instance.Name + dtpullsecret.PullSecretSuffix})
+	assert.Contains(t, templateSpec.ImagePullSecrets, corev1.LocalObjectReference{Name: instance.PullSecret()})
 }
 
 func TestStatefulSet_Container(t *testing.T) {
