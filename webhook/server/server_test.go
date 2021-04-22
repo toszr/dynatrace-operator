@@ -96,7 +96,8 @@ func TestPodInjection(t *testing.T) {
 			},
 			&corev1.Namespace{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: "test-namespace",
+					Name:   "test-namespace",
+					Labels: map[string]string{"inject": "true"},
 				},
 			},
 		),
@@ -109,7 +110,6 @@ func TestPodInjection(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "test-pod-123456",
 			Namespace: "test-namespace",
-			Labels:    map[string]string{"inject": "true"},
 		},
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{{
@@ -155,7 +155,6 @@ func TestPodInjection(t *testing.T) {
 			Annotations: map[string]string{
 				"oneagent.dynatrace.com/injected": "true",
 			},
-			Labels: map[string]string{"inject": "true"},
 		},
 		Spec: corev1.PodSpec{
 			InitContainers: []corev1.Container{{
@@ -272,7 +271,8 @@ func TestUseImmutableImage(t *testing.T) {
 				instance,
 				&corev1.Namespace{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "test-namespace",
+						Name:   "test-namespace",
+						Labels: map[string]string{"inject": "true"},
 					},
 				},
 			),
@@ -285,7 +285,6 @@ func TestUseImmutableImage(t *testing.T) {
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "test-pod-12345",
 				Namespace: "test-namespace",
-				Labels:    map[string]string{"inject": "true"},
 				Annotations: map[string]string{
 					"oneagent.dynatrace.com/image": "customregistry/linux/codemodule",
 				}},
@@ -330,7 +329,6 @@ func TestUseImmutableImage(t *testing.T) {
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "test-pod-12345",
 				Namespace: "test-namespace",
-				Labels:    map[string]string{"inject": "true"},
 				Annotations: map[string]string{
 					"oneagent.dynatrace.com/injected": "true",
 					"oneagent.dynatrace.com/image":    "customregistry/linux/codemodule",
@@ -439,8 +437,11 @@ func TestUseImmutableImage(t *testing.T) {
 				instance,
 				&corev1.Namespace{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:   "test-namespace",
-						Labels: map[string]string{"oneagent.dynatrace.com/instance": "oneagent"},
+						Name: "test-namespace",
+						Labels: map[string]string{
+							"oneagent.dynatrace.com/instance": "oneagent",
+							"inject":                          "true",
+						},
 					},
 				},
 			),
@@ -453,7 +454,6 @@ func TestUseImmutableImage(t *testing.T) {
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "test-pod-12345",
 				Namespace: "test-namespace",
-				Labels:    map[string]string{"inject": "true"},
 				Annotations: map[string]string{
 					"oneagent.dynatrace.com/image": "customregistry/linux/codemodule",
 				}},
@@ -498,7 +498,6 @@ func TestUseImmutableImage(t *testing.T) {
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "test-pod-12345",
 				Namespace: "test-namespace",
-				Labels:    map[string]string{"inject": "true"},
 				Annotations: map[string]string{
 					"oneagent.dynatrace.com/injected": "true",
 					"oneagent.dynatrace.com/image":    "customregistry/linux/codemodule",
@@ -611,8 +610,11 @@ func TestUseImmutableImage(t *testing.T) {
 				instance,
 				&corev1.Namespace{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:   "test-namespace",
-						Labels: map[string]string{"oneagent.dynatrace.com/instance": "oneagent"},
+						Name: "test-namespace",
+						Labels: map[string]string{
+							"oneagent.dynatrace.com/instance": "oneagent",
+							"inject":                          "true",
+						},
 					},
 				},
 			),
@@ -625,7 +627,6 @@ func TestUseImmutableImage(t *testing.T) {
 			ObjectMeta: metav1.ObjectMeta{
 				Name:        "test-pod-12345",
 				Namespace:   "test-namespace",
-				Labels:      map[string]string{"inject": "true"},
 				Annotations: map[string]string{}},
 			Spec: corev1.PodSpec{
 				Containers: []corev1.Container{{
@@ -668,7 +669,6 @@ func TestUseImmutableImage(t *testing.T) {
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "test-pod-12345",
 				Namespace: "test-namespace",
-				Labels:    map[string]string{"inject": "true"},
 				Annotations: map[string]string{
 					"oneagent.dynatrace.com/injected": "true",
 				},
@@ -781,8 +781,11 @@ func TestAgentVersion(t *testing.T) {
 			instance,
 			&corev1.Namespace{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:   "test-namespace",
-					Labels: map[string]string{"oneagent.dynatrace.com/instance": "oneagent"},
+					Name: "test-namespace",
+					Labels: map[string]string{
+						"oneagent.dynatrace.com/instance": "oneagent",
+						"inject":                          "true",
+					},
 				},
 			},
 		),
@@ -795,7 +798,6 @@ func TestAgentVersion(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        "test-pod-12345",
 			Namespace:   "test-namespace",
-			Labels:      map[string]string{"inject": "true"},
 			Annotations: map[string]string{}},
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{{
@@ -838,7 +840,6 @@ func TestAgentVersion(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "test-pod-12345",
 			Namespace: "test-namespace",
-			Labels:    map[string]string{"inject": "true"},
 			Annotations: map[string]string{
 				"oneagent.dynatrace.com/injected": "true",
 			},
