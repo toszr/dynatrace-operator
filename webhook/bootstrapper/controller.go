@@ -220,7 +220,7 @@ func (r *ReconcileWebhook) reconcileService(ctx context.Context, log logr.Logger
 			Name:      webhookName,
 			Namespace: r.namespace,
 			Labels: map[string]string{
-				"dynatrace.com/operator":           "oneagent",
+				"dynatrace.com/operator":           "dynakube",
 				"internal.dynatrace.com/component": "webhook",
 			},
 		},
@@ -318,7 +318,7 @@ func (r *ReconcileWebhook) reconcileWebhookConfig(ctx context.Context, log logr.
 		ObjectMeta: metav1.ObjectMeta{
 			Name: webhookName,
 			Labels: map[string]string{
-				"dynatrace.com/operator":           "oneagent",
+				"dynatrace.com/operator":           "dynakube",
 				"internal.dynatrace.com/component": "webhook",
 			},
 		},
