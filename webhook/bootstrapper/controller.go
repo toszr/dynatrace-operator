@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -72,7 +73,9 @@ func add(mgr manager.Manager, r *ReconcileWebhook) error {
 		// some time before inserting an element so that the Channel has time to initialize.
 		time.Sleep(10 * time.Second)
 
-		ticker := time.NewTicker(5 * time.Minute)
+		// should prevent that more reconciler always reconcile at the same time
+		rand.Seed(time.Now().UnixNano())
+		ticker := time.NewTicker(5*time.Minute + time.Duration(rand.Intn(60))*time.Second)
 		defer ticker.Stop()
 
 		ch <- event.GenericEvent{
