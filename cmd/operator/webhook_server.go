@@ -30,14 +30,10 @@ import (
 
 func startWebhookServer(ns string, cfg *rest.Config) (manager.Manager, error) {
 	mgr, err := ctrl.NewManager(cfg, ctrl.Options{
-		Namespace:                  ns,
-		Scheme:                     scheme.Scheme,
-		MetricsBindAddress:         ":8383",
-		Port:                       8443,
-		LeaderElection:             true,
-		LeaderElectionID:           "dynatrace-webhook-server-lock",
-		LeaderElectionResourceLock: "configmaps",
-		LeaderElectionNamespace:    ns,
+		Namespace:          ns,
+		Scheme:             scheme.Scheme,
+		MetricsBindAddress: ":8383",
+		Port:               8443,
 	})
 	if err != nil {
 		return nil, err
