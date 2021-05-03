@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"time"
 
 	"github.com/Dynatrace/dynatrace-operator/webhook"
@@ -31,8 +32,11 @@ import (
 
 // time between consecutive queries for a new pod to get ready
 const (
-	webhookName = "dynatrace-webhook"
-	certsDir    = "/mnt/webhook-certs"
+	webhookName       = "dynatrace-webhook"
+	bootstrapperName  = "dynatrace-webhook-bootstrapper"
+	certsDir          = "/mnt/webhook-certs"
+	lockLastUpdateKey = "lastUpdate"
+	lockUpdatingKey   = "updating"
 )
 
 // AddToManager creates a new OneAgent Controller and adds it to the Manager. The Manager will set fields on the Controller
@@ -93,6 +97,23 @@ func add(mgr manager.Manager, r *ReconcileWebhook) error {
 	return nil
 }
 
+func createDefaultConfigMap(namespace string) corev1.ConfigMap {
+	return corev1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      bootstrapperName,
+			Namespace: namespace,
+			Labels: map[string]string{
+				"dynatrace.com/operator":           "dynakube",
+				"internal.dynatrace.com/component": "webhook",
+			},
+		},
+		Data: map[string]string{
+			lockUpdatingKey:   "true",
+			lockLastUpdateKey: strconv.FormatInt(time.Now().Unix(), 10),
+		},
+	}
+}
+
 // ReconcileWebhook reconciles the webhook
 type ReconcileWebhook struct {
 	client    client.Client
@@ -103,20 +124,27 @@ type ReconcileWebhook struct {
 	now       time.Time
 }
 
-// Reconcile reads that state of the cluster for a OneAgent object and makes changes based on the state read
-// and what is in the OneAgent.Spec
+// Reconcile reads that state of the cluster for a Dynakube object and makes changes based on the state read
+// and what is in the Dynakube.Spec
 // Note:
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
 func (r *ReconcileWebhook) Reconcile(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
 	r.logger.Info("reconciling webhook", "namespace", request.Namespace, "name", request.Name)
 
+	lockConfig := createDefaultConfigMap(r.namespace)
+	recRequired, res, err := r.acquireLock(ctx, &lockConfig)
+	if err != nil || recRequired {
+		return res, err
+	}
+	r.logger.Info("Created cert lock")
+
 	rootCerts, err := r.reconcileCerts(ctx, r.logger)
 	if err != nil {
 		return reconcile.Result{}, fmt.Errorf("failed to reconcile certificates: %w", err)
 	}
 
-	if err := r.reconcileService(ctx, r.logger); err != nil {
+	if err := r.reconcileService(ctx, r.logger); err != nil { // todo logger can be removed
 		return reconcile.Result{}, fmt.Errorf("failed to reconcile service: %w", err)
 	}
 
@@ -124,7 +152,64 @@ func (r *ReconcileWebhook) Reconcile(ctx context.Context, request reconcile.Requ
 		return reconcile.Result{}, fmt.Errorf("failed to reconcile webhook configuration: %w", err)
 	}
 
+	if err = r.releaseLock(ctx, &lockConfig); err != nil {
+		return reconcile.Result{}, fmt.Errorf("failed to update config map for cert lock: %w", err)
+	}
+	r.logger.Info("Released cert lock")
+
 	return reconcile.Result{}, nil
+}
+
+// acquireLock creates a configmap if it does not exist that contains 2 fields (updating and lastUpdate).
+// If updating is true another bootstrapper is already creating certs - therefore the request gets requeued.
+// To mitigate that a died bootstrapper created the lock, acquireLock also checks if the lock is not older than 2 minutes.
+func (r *ReconcileWebhook) acquireLock(ctx context.Context, lockConfig *corev1.ConfigMap) (bool, reconcile.Result, error) {
+	err := r.client.Get(context.TODO(), client.ObjectKey{Name: bootstrapperName, Namespace: r.namespace}, lockConfig)
+	if k8serrors.IsNotFound(err) {
+		r.logger.Info("Config Map for lock doesn't exist, creating...")
+		if err = r.client.Create(ctx, lockConfig); err != nil {
+			return true, reconcile.Result{}, fmt.Errorf("failed to create config map for cert lock: %w", err)
+		}
+	} else {
+		// config map exists
+
+		// if already locked and lock not older than 2 minutes requeue after 1 minute
+		lastUpdate, err := strconv.ParseInt(lockConfig.Data[lockLastUpdateKey], 10, 64)
+		if err != nil {
+			return true, reconcile.Result{}, fmt.Errorf("failed to parse lastUpdate field of lock: %w", err)
+		}
+		if lockConfig.Data["updating"] == "true" {
+			if time.Now().Add(-time.Minute * 2).After(time.Unix(lastUpdate, 0)) {
+				r.logger.Info("Lock of other bootstrapper timed out, acquiring ...")
+			} else {
+				r.logger.Info("Other bootstrapper is updating certs, trying again in 10 seconds ...")
+				return true, reconcile.Result{
+					RequeueAfter: 10 * time.Second,
+				}, nil
+			}
+		}
+
+		// acquire lock
+		lockConfig.Data = map[string]string{
+			lockUpdatingKey:   "true",
+			lockLastUpdateKey: strconv.FormatInt(time.Now().Unix(), 10),
+		}
+
+		if err = r.client.Update(ctx, lockConfig); err != nil {
+			return true, reconcile.Result{}, fmt.Errorf("failed to update config map for cert lock: %w", err)
+		}
+	}
+	return false, reconcile.Result{}, nil
+}
+
+// releaseLock overrides the ConfigMap created with acquireLock and sets updating to false
+func (r *ReconcileWebhook) releaseLock(ctx context.Context, lockConfig *corev1.ConfigMap) error {
+	lockConfig.Data = map[string]string{
+		"updating":   "false",
+		"lastUpdate": strconv.FormatInt(time.Now().Unix(), 10),
+	}
+
+	return r.client.Update(ctx, lockConfig)
 }
 
 func (r *ReconcileWebhook) reconcileService(ctx context.Context, log logr.Logger) error {
