@@ -19,7 +19,12 @@ const (
 
 func TestCreateService(t *testing.T) {
 	instance := &dynatracev1beta1.DynaKube{
-		ObjectMeta: v1.ObjectMeta{Namespace: testNamespace, Name: testName},
+		ObjectMeta: v1.ObjectMeta{
+			Namespace: testNamespace, Name: testName,
+		},
+		Spec: dynatracev1beta1.DynaKubeSpec{
+			APIURL: "https://testing.dev.dynatracelabs.com/api",
+		},
 	}
 	service := createService(instance, testFeature)
 
@@ -50,6 +55,21 @@ func TestCreateService(t *testing.T) {
 			TargetPort: intstr.FromString(consts.HttpServiceTargetPort),
 		},
 	)
+	if instance.FeatureEnableStatsDIngest() {
+		assert.Contains(t, ports, corev1.ServicePort{
+			Name:       consts.StatsDIngestPortName,
+			Protocol:   corev1.ProtocolUDP,
+			Port:       consts.StatsDIngestPort,
+			TargetPort: intstr.FromString(consts.StatsDIngestTargetPort),
+		})
+	} else {
+		assert.NotContains(t, ports, corev1.ServicePort{
+			Name:       consts.StatsDIngestPortName,
+			Protocol:   corev1.ProtocolUDP,
+			Port:       consts.StatsDIngestPort,
+			TargetPort: intstr.FromString(consts.StatsDIngestTargetPort),
+		})
+	}
 }
 
 func TestBuildServiceNameForDNSEntryPoint(t *testing.T) {

@@ -13,6 +13,29 @@ import (
 )
 
 func createService(instance *dynatracev1beta1.DynaKube, feature string) *corev1.Service {
+	ports := []corev1.ServicePort{
+		{
+			Name:       consts.HttpsServiceTargetPort,
+			Protocol:   corev1.ProtocolTCP,
+			Port:       consts.HttpsServicePort,
+			TargetPort: intstr.FromString(consts.HttpsServiceTargetPort),
+		},
+		{
+			Name:       consts.HttpServiceTargetPort,
+			Protocol:   corev1.ProtocolTCP,
+			Port:       consts.HttpServicePort,
+			TargetPort: intstr.FromString(consts.HttpServiceTargetPort),
+		},
+	}
+	if instance.FeatureEnableStatsDIngest() {
+		ports = append(ports, corev1.ServicePort{
+			Name:       consts.StatsDIngestPortName,
+			Protocol:   corev1.ProtocolUDP,
+			Port:       consts.StatsDIngestPort,
+			TargetPort: intstr.FromString(consts.StatsDIngestTargetPort),
+		})
+	}
+
 	return &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      BuildServiceName(instance.Name, feature),
@@ -22,20 +45,7 @@ func createService(instance *dynatracev1beta1.DynaKube, feature string) *corev1.
 		Spec: corev1.ServiceSpec{
 			Type:     corev1.ServiceTypeClusterIP,
 			Selector: statefulset.BuildLabelsFromInstance(instance, feature),
-			Ports: []corev1.ServicePort{
-				{
-					Name:       consts.HttpsServiceTargetPort,
-					Protocol:   corev1.ProtocolTCP,
-					Port:       consts.HttpsServicePort,
-					TargetPort: intstr.FromString(consts.HttpsServiceTargetPort),
-				},
-				{
-					Name:       consts.HttpServiceTargetPort,
-					Protocol:   corev1.ProtocolTCP,
-					Port:       consts.HttpServicePort,
-					TargetPort: intstr.FromString(consts.HttpServiceTargetPort),
-				},
-			},
+			Ports:    ports,
 		},
 	}
 }
