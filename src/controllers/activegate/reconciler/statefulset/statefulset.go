@@ -110,7 +110,7 @@ func CreateStatefulSet(stsProperties *statefulSetProperties) (*appsv1.StatefulSe
 }
 
 func getContainerBuilders(stsProperties *statefulSetProperties) []ContainerBuilder {
-	if stsProperties.DynaKube.FeatureEnableStatsDIngest() {
+	if stsProperties.NeedsStatsD() {
 		return []ContainerBuilder{
 			NewExtensionController(stsProperties),
 			NewStatsD(stsProperties),
@@ -227,7 +227,7 @@ func buildVolumeMounts(stsProperties *statefulSetProperties) []corev1.VolumeMoun
 		})
 	}
 
-	if stsProperties.DynaKube.FeatureEnableStatsDIngest() {
+	if stsProperties.NeedsStatsD() {
 		volumeMounts = append(volumeMounts,
 			corev1.VolumeMount{Name: "auth-tokens", MountPath: "/var/lib/dynatrace/gateway/config"},
 		)
