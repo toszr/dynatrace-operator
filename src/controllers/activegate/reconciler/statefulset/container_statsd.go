@@ -3,7 +3,6 @@ package statefulset
 import (
 	"fmt"
 
-	dynatracev1beta1 "github.com/Dynatrace/dynatrace-operator/api/v1beta1"
 	"github.com/Dynatrace/dynatrace-operator/controllers/activegate/internal/consts"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
@@ -26,7 +25,7 @@ func NewStatsD(stsProperties *statefulSetProperties) *StatsD {
 
 func (statsd *StatsD) BuildContainer() corev1.Container {
 	return corev1.Container{
-		Name:            fmt.Sprintf("%s-statsd", dynatracev1beta1.OperatorName),
+		Name:            consts.StatsDContainerName,
 		Image:           statsd.StsProperties.DynaKube.ActiveGateImage(),
 		ImagePullPolicy: corev1.PullAlways,
 		Env:             statsd.buildEnvs(),
@@ -37,7 +36,6 @@ func (statsd *StatsD) BuildContainer() corev1.Container {
 			Handler: corev1.Handler{
 				HTTPGet: &corev1.HTTPGetAction{
 					Path: "/readyz",
-					//Port:   intstr.IntOrString{StrVal: statsDProbesPortName},
 					Port: intstr.IntOrString{IntVal: statsDProbesPort},
 				},
 			},

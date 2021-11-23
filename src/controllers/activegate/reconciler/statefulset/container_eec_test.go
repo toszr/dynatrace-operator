@@ -34,7 +34,6 @@ func TestExtensionController_BuildContainerAndVolumes(t *testing.T) {
 			"/var/lib/dynatrace/gateway/config",
 			"/mnt/dsexecargs",
 			"/var/lib/dynatrace/remotepluginmodule/agent/runtime/datasources",
-			"/var/lib/dynatrace/remotepluginmodule/agent/conf/runtime",
 			"/opt/dynatrace/remotepluginmodule/agent/datasources/statsd",
 		} {
 			assertion.Truef(mountPathIsIn(container.VolumeMounts, mountPath), "Expected that EEC container defines mount point %s", mountPath)
@@ -57,43 +56,4 @@ func TestExtensionController_BuildContainerAndVolumes(t *testing.T) {
 			assertion.Truef(volumeIsDefined(volumes, volumeMount.Name), "Expected that volume mount %s has a predefined pod volume", volumeMount.Name)
 		}
 	})
-}
-
-func TestGetTenantId(t *testing.T) {
-	testCases := []struct {
-		apiUrl           string
-		expectedTenantId string
-		expectedError    string
-	}{
-		{
-			apiUrl: "https://demo.dev.dynatracelabs.com/api", expectedTenantId: "demo",
-			expectedError: "",
-		},
-		{
-			apiUrl: "demo.dev.dynatracelabs.com/api", expectedTenantId: "",
-			expectedError: "problem getting tenant id from fqdn ''",
-		},
-		{
-			apiUrl: "https://google.com", expectedTenantId: "",
-			expectedError: "api url https://google.com does not end with /api",
-		},
-		{
-			apiUrl: "/api", expectedTenantId: "",
-			expectedError: "problem getting tenant id from fqdn ''",
-		},
-	}
-
-	for _, testCase := range testCases {
-		actualTenantId, err := getTenantId(testCase.apiUrl)
-		if len(testCase.expectedError) > 0 {
-			assert.EqualErrorf(t, err, testCase.expectedError, "Expected that getting tenant id from '%s' will result in: '%v'",
-				testCase.apiUrl, testCase.expectedError,
-			)
-		} else {
-			assert.NoErrorf(t, err, "Expected that getting tenant id from '%s' will be successful", testCase.apiUrl)
-		}
-		assert.Equalf(t, testCase.expectedTenantId, actualTenantId, "Expected that tenant id of %s is %s, but found %s",
-			testCase.apiUrl, testCase.expectedTenantId, actualTenantId,
-		)
-	}
 }
