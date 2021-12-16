@@ -43,13 +43,13 @@ func TestCreateService(t *testing.T) {
 	ports := serviceSpec.Ports
 	assert.Contains(t, ports,
 		corev1.ServicePort{
-			Name:       consts.HttpsServiceTargetPort,
+			Name:       consts.HttpsServicePortName,
 			Protocol:   corev1.ProtocolTCP,
 			Port:       consts.HttpsServicePort,
 			TargetPort: intstr.FromString(consts.HttpsServiceTargetPort),
 		},
 		corev1.ServicePort{
-			Name:       consts.HttpServiceTargetPort,
+			Name:       consts.HttpServicePortName,
 			Protocol:   corev1.ProtocolTCP,
 			Port:       consts.HttpServicePort,
 			TargetPort: intstr.FromString(consts.HttpServiceTargetPort),

@@ -4,11 +4,10 @@ import (
 	"fmt"
 
 	dynatracev1beta1 "github.com/Dynatrace/dynatrace-operator/src/api/v1beta1"
-	"github.com/Dynatrace/dynatrace-operator/src/controllers/activegate/internal/consts"
+	"github.com/Dynatrace/dynatrace-operator/src/controllers/activegate/customproperties"
 	"github.com/Dynatrace/dynatrace-operator/src/controllers/activegate/internal/events"
-	"github.com/Dynatrace/dynatrace-operator/src/controllers/customproperties"
-	"github.com/Dynatrace/dynatrace-operator/src/controllers/kubeobjects"
 	"github.com/Dynatrace/dynatrace-operator/src/deploymentmetadata"
+	"github.com/Dynatrace/dynatrace-operator/src/kubeobjects"
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	appsv1 "k8s.io/api/apps/v1"
@@ -54,7 +53,7 @@ type statefulSetProperties struct {
 
 func NewStatefulSetProperties(instance *dynatracev1beta1.DynaKube, capabilityProperties *dynatracev1beta1.CapabilityProperties,
 	kubeSystemUID types.UID, customPropertiesHash string, feature string, capabilityName string, serviceAccountOwner string,
-	initContainers []corev1.Container, containerVolumeMounts []corev1.VolumeMount, volumes []corev1.Volume, log logr.Logger) *statefulSetProperties {
+	initContainers []corev1.Container, containerVolumeMounts []corev1.VolumeMount, volumes []corev1.Volume) *statefulSetProperties {
 	if serviceAccountOwner == "" {
 		serviceAccountOwner = feature
 	}
@@ -71,7 +70,6 @@ func NewStatefulSetProperties(instance *dynatracev1beta1.DynaKube, capabilityPro
 		initContainersTemplates: initContainers,
 		containerVolumeMounts:   containerVolumeMounts,
 		volumes:                 volumes,
-		log:                     log,
 	}
 }
 

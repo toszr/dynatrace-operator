@@ -77,11 +77,11 @@ func setCommunicationsPort(dk *dynatracev1beta1.DynaKube) events.StatefulSetEven
 			if err == nil {
 				activeGateContainer.Ports = []corev1.ContainerPort{
 					{
-						Name:          consts.HttpsServiceTargetPort,
+						Name:          consts.HttpsServicePortName,
 						ContainerPort: httpsContainerPort,
 					},
 					{
-						Name:          consts.HttpServiceTargetPort,
+						Name:          consts.HttpServicePortName,
 						ContainerPort: httpContainerPort,
 					},
 				}

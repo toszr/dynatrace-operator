@@ -5,7 +5,7 @@ import (
 	"hash/fnv"
 	"strconv"
 
-	dynatracev1beta1 "github.com/Dynatrace/dynatrace-operator/api/v1beta1"
+	dynatracev1beta1 "github.com/Dynatrace/dynatrace-operator/src/api/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

@@ -11,10 +11,7 @@ import (
 	"github.com/Dynatrace/dynatrace-operator/src/controllers/activegate/internal/consts"
 	rsfs "github.com/Dynatrace/dynatrace-operator/src/controllers/activegate/reconciler/statefulset"
 	"github.com/Dynatrace/dynatrace-operator/src/kubesystem"
-	"github.com/Dynatrace/dynatrace-operator/src/logger"
 	"github.com/Dynatrace/dynatrace-operator/src/scheme"
-	"github.com/go-logr/logr"
-	testlogr "github.com/go-logr/logr/testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	appsv1 "k8s.io/api/apps/v1"
@@ -98,10 +95,16 @@ func TestReconcile(t *testing.T) {
 	}
 
 	agIngestServicePort := corev1.ServicePort{
-		Name:       consts.ServicePortName,
+		Name:       consts.HttpsServicePortName,
 		Protocol:   corev1.ProtocolTCP,
-		Port:       consts.ServicePort,
-		TargetPort: intstr.FromString(consts.ServiceTargetPort),
+		Port:       consts.HttpsServicePort,
+		TargetPort: intstr.FromString(consts.HttpsServiceTargetPort),
+	}
+	agIngestHttpServicePort := corev1.ServicePort{
+		Name:       consts.HttpServicePortName,
+		Protocol:   corev1.ProtocolTCP,
+		Port:       consts.HttpServicePort,
+		TargetPort: intstr.FromString(consts.HttpServiceTargetPort),
 	}
 	statsDIngestServicePort := corev1.ServicePort{
 		Name:       consts.StatsDIngestPortName,
@@ -175,7 +178,7 @@ func TestReconcile(t *testing.T) {
 		reconcileAndExpectUpdate(r, true)
 		{
 			service := assertServiceExists(r)
-			assert.Len(t, service.Spec.Ports, 1)
+			assert.Len(t, service.Spec.Ports, 2)
 
 			assert.Error(t, r.Get(context.TODO(), client.ObjectKey{Name: r.calculateStatefulSetName(), Namespace: r.Instance.Namespace}, &appsv1.StatefulSet{}))
 		}
@@ -183,9 +186,9 @@ func TestReconcile(t *testing.T) {
 		reconcileAndExpectUpdate(r, true)
 		{
 			service := assertServiceExists(r)
-			assert.Len(t, service.Spec.Ports, 1)
+			assert.Len(t, service.Spec.Ports, 2)
 			assert.ElementsMatch(t, service.Spec.Ports, []corev1.ServicePort{
-				agIngestServicePort,
+				agIngestServicePort, agIngestHttpServicePort,
 			})
 
 			statefulSet := assertStatefulSetExists(r)
@@ -197,9 +200,9 @@ func TestReconcile(t *testing.T) {
 		reconcileAndExpectUpdate(r, true)
 		{
 			service := assertServiceExists(r)
-			assert.Len(t, service.Spec.Ports, 2)
+			assert.Len(t, service.Spec.Ports, 3)
 			assert.ElementsMatch(t, service.Spec.Ports, []corev1.ServicePort{
-				agIngestServicePort, statsDIngestServicePort,
+				agIngestServicePort, agIngestHttpServicePort, statsDIngestServicePort,
 			})
 
 			statefulSet := assertStatefulSetExists(r)
@@ -210,7 +213,7 @@ func TestReconcile(t *testing.T) {
 		{
 			service := assertServiceExists(r)
 			assert.ElementsMatch(t, service.Spec.Ports, []corev1.ServicePort{
-				agIngestServicePort, statsDIngestServicePort,
+				agIngestServicePort, agIngestHttpServicePort, statsDIngestServicePort,
 			})
 
 			statefulSet := assertStatefulSetExists(r)
@@ -226,7 +229,7 @@ func TestReconcile(t *testing.T) {
 		{
 			service := assertServiceExists(r)
 			assert.ElementsMatch(t, service.Spec.Ports, []corev1.ServicePort{
-				agIngestServicePort,
+				agIngestServicePort, agIngestHttpServicePort,
 			})
 
 			statefulSet := assertStatefulSetExists(r)
@@ -238,7 +241,7 @@ func TestReconcile(t *testing.T) {
 func TestSetReadinessProbePort(t *testing.T) {
 	r := createDefaultReconciler(t)
 	stsProps := rsfs.NewStatefulSetProperties(r.Instance, metricsCapability.Properties(), "", "", "", "", "",
-		nil, nil, nil, testlogr.TestLogger{T: t},
+		nil, nil, nil,
 	)
 	sts, err := rsfs.CreateStatefulSet(stsProps)
 

@@ -3,7 +3,7 @@ package statefulset
 import (
 	"fmt"
 
-	"github.com/Dynatrace/dynatrace-operator/controllers/activegate/internal/consts"
+	"github.com/Dynatrace/dynatrace-operator/src/controllers/activegate/internal/consts"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )

@@ -3,7 +3,6 @@ package statefulset
 import (
 	"testing"
 
-	logr "github.com/go-logr/logr/testing"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +13,7 @@ func TestExtensionController_BuildContainerAndVolumes(t *testing.T) {
 	capabilityProperties := &instance.Spec.Routing.CapabilityProperties
 	stsProperties := NewStatefulSetProperties(instance, capabilityProperties,
 		"", "", "", "", "",
-		nil, nil, nil, logr.TestLogger{T: t},
+		nil, nil, nil,
 	)
 
 	t.Run("happy path", func(t *testing.T) {
