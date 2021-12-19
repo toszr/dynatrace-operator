@@ -5,6 +5,7 @@ import (
 
 	dynatracev1beta1 "github.com/Dynatrace/dynatrace-operator/src/api/v1beta1"
 	"github.com/Dynatrace/dynatrace-operator/src/controllers/activegate/customproperties"
+	"github.com/Dynatrace/dynatrace-operator/src/controllers/activegate/internal/consts"
 	"github.com/Dynatrace/dynatrace-operator/src/controllers/activegate/internal/events"
 	"github.com/Dynatrace/dynatrace-operator/src/deploymentmetadata"
 	"github.com/Dynatrace/dynatrace-operator/src/kubeobjects"
@@ -32,8 +33,6 @@ const (
 	DTDeploymentMetadata = "DT_DEPLOYMENT_METADATA"
 
 	ProxySecretKey = "proxy"
-
-	ActivegateContainerName = "activegate"
 )
 
 type statefulSetProperties struct {
@@ -162,7 +161,7 @@ func buildContainers(stsProperties *statefulSetProperties, extraContainerBuilder
 
 func buildActiveGateContainer(stsProperties *statefulSetProperties) corev1.Container {
 	return corev1.Container{
-		Name:            ActivegateContainerName,
+		Name:            consts.ActiveGateContainerName,
 		Image:           stsProperties.DynaKube.ActiveGateImage(),
 		Resources:       stsProperties.CapabilityProperties.Resources,
 		ImagePullPolicy: corev1.PullAlways,

@@ -46,13 +46,13 @@ func TestCreateService(t *testing.T) {
 			Name:       consts.HttpsServicePortName,
 			Protocol:   corev1.ProtocolTCP,
 			Port:       consts.HttpsServicePort,
-			TargetPort: intstr.FromString(consts.HttpsServiceTargetPort),
+			TargetPort: intstr.FromString(consts.HttpsServicePortName),
 		},
 		corev1.ServicePort{
 			Name:       consts.HttpServicePortName,
 			Protocol:   corev1.ProtocolTCP,
 			Port:       consts.HttpServicePort,
-			TargetPort: intstr.FromString(consts.HttpServiceTargetPort),
+			TargetPort: intstr.FromString(consts.HttpServicePortName),
 		},
 	)
 	if instance.FeatureEnableStatsDIngest() {

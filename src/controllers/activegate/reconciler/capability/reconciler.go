@@ -55,7 +55,7 @@ func NewReconciler(capability capability.Capability, clt client.Client, apiReade
 
 func setReadinessProbePort() events.StatefulSetEvent {
 	return func(sts *appsv1.StatefulSet) {
-		sts.Spec.Template.Spec.Containers[0].ReadinessProbe.HTTPGet.Port = intstr.FromString(consts.HttpsServiceTargetPort)
+		sts.Spec.Template.Spec.Containers[0].ReadinessProbe.HTTPGet.Port = intstr.FromString(consts.HttpsServicePortName)
 	}
 }
 
