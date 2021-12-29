@@ -45,10 +45,10 @@ var (
 )
 
 var ActiveGateDisplayNames = map[CapabilityDisplayName]bool{
-	RoutingCapability.DisplayName:    true,
-	KubeMonCapability.DisplayName:    true,
-	DataIngestCapability.DisplayName: true,
-	//StatsDIngestCapability.DisplayName: true, // TODO Enable once EEC/StatsD images are pullable from the cluster
+	RoutingCapability.DisplayName:      true,
+	KubeMonCapability.DisplayName:      true,
+	DataIngestCapability.DisplayName:   true,
+	StatsDIngestCapability.DisplayName: true,
 }
 
 type ActiveGateSpec struct {
